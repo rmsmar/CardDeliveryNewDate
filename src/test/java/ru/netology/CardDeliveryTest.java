@@ -79,7 +79,7 @@ public class CardDeliveryTest {
         $(".button__text").click();
         $(".input_theme_alfa-on-white.input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
     }
-
+    
     @Test
     void shouldNotSubmitWithoutCheckbox() {
         $("[placeholder='Город']").setValue(dataGenerator.makeCity());
