@@ -20,23 +20,25 @@ public class CardDeliveryTest {
 
     @Test
     void shouldSubmitRequest() {
-        String name = dataGenerator.makeName();
-        String phone = dataGenerator.makePhone();
-        String city = dataGenerator.makeCity();
-
-        $("[placeholder='Город']").setValue(city);
-        $("[placeholder='Дата встречи']").doubleClick().sendKeys(dataGenerator.forwardDate(3));
-        $("[name=name]").setValue(name);
-        $("[name=phone]").setValue(phone);
+        String firstMeetingDate = DataGenerator.forwardDate(4);
+        String secondMeetingDate = DataGenerator.forwardDate(5);
+        $("[placeholder='Город']").setValue(DataGenerator.makeCity());
+        $("[placeholder='Дата встречи']").doubleClick().sendKeys(firstMeetingDate);
+        $("[name=name]").setValue(DataGenerator.makeName());
+        $("[name=phone]").setValue(DataGenerator.makePhone());
         $(".checkbox__box").click();
         $(".button__text").click();
         $(withText("Успешно")).shouldBe(visible);
+        $(".notification__content").shouldBe(visible)
+                .shouldHave(exactText("Встреча успешно запланирована на " + firstMeetingDate));
         $("input[placeholder=\"Дата встречи\"]").doubleClick().sendKeys(Keys.BACK_SPACE);
-        $("[placeholder='Дата встречи']").doubleClick().sendKeys(dataGenerator.forwardDate(4));
+        $("[placeholder='Дата встречи']").doubleClick().sendKeys(secondMeetingDate);
         $(".button__text").click();
         $(withText("У вас уже запланирована встреча на другую дату. Перепланировать?")).shouldBe(visible);
         $("[data-test-id=replan-notification] button.button").click();
         $(withText("Успешно")).shouldBe(visible);
+        $(".notification__content").shouldBe(visible)
+                .shouldHave(exactText("Встреча успешно запланирована на " + secondMeetingDate));
     }
 
     @Test
@@ -79,7 +81,7 @@ public class CardDeliveryTest {
         $(".button__text").click();
         $(".input_theme_alfa-on-white.input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
     }
-    
+
     @Test
     void shouldNotSubmitWithoutCheckbox() {
         $("[placeholder='Город']").setValue(dataGenerator.makeCity());
